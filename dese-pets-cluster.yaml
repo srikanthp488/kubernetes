@@ -1,0 +1,37 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: depe
+spec:
+  selector:
+    matchLabels:
+      app: pets
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pets
+    spec:
+      containers:
+      - name: canp
+        image: psrikanth89/canpet
+        ports:
+        - containerPort: 8085
+        args:
+        - "-text=pets"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sepe
+  labels:
+    app: pets
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8085
+  selector:
+    app: pets

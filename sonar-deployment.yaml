@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: 
+  labels:
+    app: 
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: 
+    spec:
+      containers:
+      - name: 
+        image: sonarqube:6.5
+        ports:
+        - name: 
+          containerPort: 9000
+        env:
+        - name: SONARQUBE_JDBC_USERNAME
+          value: sonar
+        - name: SONARQUBE_JDBC_PASSWORD
+          value: sonar
+        - name: SONARQUBE_JDBC_URL
+          value: jdbc:sqlserver://localhost;databaseName=sonar
+        volumeMounts:
+         - name: sonarqube-extensions
+           mountPath: /opt/sonarqube/extensions
+         - name: sonarqube-data
+           mountPath: /opt/sonarqube/data
+      volumes:
+      - name: 
+        nfs:
+          server: ""
+          path: "/sonarqube/extensions"
+          readOnly: false
+      - name: 
+        nfs:
+          server: ""
+          path: "/sonarqube/data"
+          readOnly: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: 
+  labels:
+    name: 
+spec:
+  ports:
+  - port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app: 
+

@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: hello
+spec:
+  selector:
+    matchLabels:
+      app: pets
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pets
+    spec:
+      containers:
+      - name: canp
+        image: kanthreg.azurecr.io/petclinic:v3
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8085
+      imagePullSecrets:
+      - name: pets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sepe
+  labels:
+    app: pets
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8081
+    protocol: TCP
+    targetPort: 8085
+  selector:
+    app: pets

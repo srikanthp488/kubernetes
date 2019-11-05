@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-nfs-sonar-share
+spec:
+  capacity:
+    storage: 20Gi 
+  accessModes:
+    - ReadWriteMany 
+  persistentVolumeReclaimPolicy: Recycle 
+  nfs:
+    server: nfs.example.com 
+    path: /share1 
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-nfs-sonar-data-claim 
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-nfs-sonar-exten-claim 
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 
+spec:
+  selector:
+    matchLabels:
+      app: 
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: 
+    spec:
+      containers:
+      - name: 
+        image:
+        ports:
+        - containerPort: 
+        resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits: 
+              cpu: "100m"
+              memory: "256Mi"
+        volumeMounts:
+        - name: sonar-extensions
+          mountPath: /opt/sonarqube/extensions
+        volumeMounts:
+        - name: sonar-data
+          mountPath: /opt/sonarqube/extensions
+      volumes:
+      - name: 
+        persistentVolumeClaim:
+          claimName: my-nfs-sonar-data-cliam
+      volumes:
+      - name: sonar-extensions
+        persistentVolumeClaim:
+          claimName: my-nfs-sonar-exten-cliam
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: 
+  labels:
+    app: 
+spec:
+  type: NodePort
+  ports:
+  - port: 
+    protocol: TCP
+    targetPort: 
+    nodePort: 
+  selector:
+    app: 

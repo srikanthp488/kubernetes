@@ -1,0 +1,41 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: canp
+        image: tomcat
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /usr/local/tomcat/webapps/
+          name: webapps
+      volumes:
+      - name: webapps
+        hostPath:
+          path: /home/masternew/jenkins
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tomcat
+  labels:
+    app: nginx
+spec:
+  type: NodePort
+  ports:
+  - port: 8000
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: nginx

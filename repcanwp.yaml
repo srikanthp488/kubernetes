@@ -1,0 +1,38 @@
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: hello1
+  namespace: dev
+spec:
+  selector:
+    app: pets1
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: pets1
+    spec:
+      containers:
+      - name: canp
+        image: psrikanth89/pets:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8030
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sepe1
+  namespace: dev
+  labels:
+    app: pets1
+spec:
+  type: NodePort
+  ports:
+  - port: 8030
+    protocol: TCP
+    nodePort: 30036
+    targetPort: 8085
+  selector:
+    app: pets1

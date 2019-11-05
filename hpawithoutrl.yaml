@@ -1,0 +1,52 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: localhpatest
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: depe
+  minReplicas: 2
+  maxReplicas: 15
+  metrics:
+    - resource:
+        name: cpu
+        targetAverageUtilization: 40
+      type: Resource
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: depe
+spec:
+  selector:
+    matchLabels:
+      app: pets
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: pets
+    spec:
+      containers:
+      - name: canp
+        image: psrikanth89/pets:v1
+        ports:
+        - containerPort: 8030
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sepe
+  labels:
+    app: pets
+spec:
+  type: NodePort
+  ports:
+  - port: 8030
+    protocol: TCP
+    nodePort: 32000
+    targetPort: 8085
+  selector:
+    app: pets

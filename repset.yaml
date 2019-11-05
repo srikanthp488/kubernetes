@@ -1,0 +1,37 @@
+---
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  name: hello3
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app: pets1
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pets1
+    spec:
+      containers:
+      - name: canp
+        image: psrikanth89/pets:v1
+        imagePullPolicy: Always
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sepe3
+  namespace: dev
+  labels:
+    app: pets1
+spec:
+  type: NodePort
+  ports:
+  - protocol: TCP
+    nodePort: 30037
+    targetPort: 8085
+  selector:
+    app: pets1
