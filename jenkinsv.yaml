@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: canp
+        image: jenkins/jenkins
+        ports:
+        - containerPort: 8080
+        - name: jnlp-port
+          containerPort: 50000
+        resources:
+          requests:
+            ephemeral-storage: "2Gi"
+          limits:
+           ephemeral-storage: "4Gi"
+        volumeMounts:
+        - mountPath: /var/jenkins_home
+          name: webapps
+      volumes:
+      - name: webapps
+        hostPath:
+          path: /home/masternew/jenkins
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins
+  labels:
+    app: nginx
+spec:
+  type: NodePort
+  ports:
+  - port: 8000
+    protocol: TCP
+    targetPort: 8080
+    nodePort: 30000
+  selector:
+    app: nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-jnlp
+  labels:
+    app: nginx
+spec:
+  type: NodePort
+  ports:
+    - port: 50000
+      targetPort: 50000
+      nodePort: 32001
+  selector:
+    app: nginx
